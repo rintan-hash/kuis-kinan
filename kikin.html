@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Perbandingan Senilai Kelas 7</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color:  #1f639f;  
+        }
+
+        .form-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            max-width: 300px;
+            margin: 10px auto;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .question-container {
+            margin-bottom: 20px;
+        }
+
+        #resultContainer {
+            margin-top: 30px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>Kuis Perbandingan Senilai Kelas 7</h1>
+    <div class="form-container" id="formContainer">
+        <label for="name">Nama:</label>
+        <input type="text" id="name" placeholder="Masukkan nama" required>
+        <label for="class">Kelas:</label>
+        <input type="text" id="class" placeholder="Masukkan kelas" required>
+        <button id="startButton">Mulai Kuis</button>
+    </div>
+
+    <div id="quizContent" style="display:none;">
+        <div class="question-container" id="questionContainer">
+            <!-- Pertanyaan akan dimuat di sini -->
+        </div>
+
+        <div class="button-container">
+            <button id="prevButton" disabled>Previous</button>
+            <button id="nextButton" disabled>Next</button>
+            <button id="submitButton" disabled>Submit</button>
+        </div>
+    </div>
+
+    <div id="resultContainer"></div>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "Jika 2 buku seharga Rp10.000, berapakah harga 6 buku?",
+            options: ["Rp30.000", "Rp20.000", "Rp60.000", "Rp40.000"],
+            answer: "Rp30.000",
+            explanation: "Perbandingan harga adalah senilai, jadi harga 6 buku = (6/2) * 10.000 = Rp30.000."
+        },
+        {
+            question: "Jika 5 kg apel harganya Rp50.000, berapa harga 3 kg apel?",
+            options: ["Rp30.000", "Rp25.000", "Rp35.000", "Rp20.000"],
+            answer: "Rp30.000",
+            explanation: "Harga 1 kg apel = 50.000 / 5 = Rp10.000. Maka, harga 3 kg = 3 * Rp10.000 = Rp30.000."
+        },
+        {
+            question: "Sebuah mobil menempuh 240 km dalam 4 jam. Berapa jarak yang ditempuh dalam 6 jam?",
+            options: ["300 km", "360 km", "400 km", "480 km"],
+            answer: "360 km",
+            explanation: "Perbandingan senilai: 240/4 = 60 km/jam. Maka, 6 jam = 6 * 60 = 360 km."
+        },
+        {
+            question: "Jika 8 pensil berharga Rp16.000, berapa harga 12 pensil?",
+            options: ["Rp24.000", "Rp32.000", "Rp20.000", "Rp18.000"],
+            answer: "Rp24.000",
+            explanation: "Harga per pensil = 16.000 / 8 = Rp2.000. Maka, harga 12 pensil = 12 * 2.000 = Rp24.000."
+        },
+        {
+            question: "Jika 3 orang membutuhkan 9 liter air, berapa liter air yang dibutuhkan 5 orang?",
+            options: ["10 liter", "12 liter", "15 liter", "18 liter"],
+            answer: "15 liter",
+            explanation: "Perbandingan senilai: 9/3 = 3 liter per orang. Maka, 5 orang = 5 * 3 = 15 liter."
+        },
+        {
+            question: "Jika 4 ekor kambing makan 16 kg rumput, berapa kg rumput yang dibutuhkan 6 ekor kambing?",
+            options: ["24 kg", "18 kg", "20 kg", "22 kg"],
+            answer: "24 kg",
+            explanation: "Perbandingan senilai: 16/4 = 4 kg per kambing. Maka, 6 kambing = 6 * 4 = 24 kg."
+        },
+        {
+            question: "5 orang dapat menyelesaikan pekerjaan dalam 10 hari. Berapa lama 10 orang menyelesaikan pekerjaan yang sama?",
+            options: ["5 hari", "7 hari", "8 hari", "10 hari"],
+            answer: "5 hari",
+            explanation: "Perbandingan senilai: Pekerjaan dibagi lebih banyak orang, maka waktunya lebih singkat: 10/5 = 2 kali lebih cepat, jadi 10 / 2 = 5 hari."
+        },
+        {
+            question: "Jika 2 kg gula seharga Rp24.000, berapa harga 5 kg gula?",
+            options: ["Rp50.000", "Rp60.000", "Rp48.000", "Rp72.000"],
+            answer: "Rp60.000",
+            explanation: "Harga per kg gula = 24.000 / 2 = Rp12.000. Maka, harga 5 kg = 5 * 12.000 = Rp60.000."
+        },
+        {
+            question: "Sebuah kereta menempuh 150 km dalam 3 jam. Berapa jarak yang ditempuh dalam 5 jam?",
+            options: ["250 km", "200 km", "300 km", "275 km"],
+            answer: "250 km",
+            explanation: "Perbandingan senilai: 150/3 = 50 km/jam. Maka, dalam 5 jam = 5 * 50 = 250 km."
+        },
+        {
+            question: "Jika 6 buku seharga Rp90.000, berapa harga 4 buku?",
+            options: ["Rp60.000", "Rp75.000", "Rp45.000", "Rp80.000"],
+            answer: "Rp60.000",
+            explanation: "Harga per buku = 90.000 / 6 = Rp15.000. Maka, harga 4 buku = 4 * 15.000 = Rp60.000."
+        },
+    
+        {
+            question: "Jika 3 kg beras seharga Rp45.000, berapa harga 7 kg beras?",
+            options: ["Rp70.000", "Rp90.000", "Rp105.000", "Rp85.000"],
+            answer: "Rp105.000",
+            explanation: "Harga 1 kg beras = 45.000 / 3 = Rp15.000. Maka, harga 7 kg = 7 * 15.000 = Rp105.000."
+        },
+        {
+            question: "Sebuah mesin mencetak 2000 unit dalam 8 jam. Berapa banyak unit yang dapat dicetak dalam 12 jam?",
+            options: ["3000 unit", "2500 unit", "4000 unit", "6000 unit"],
+            answer: "3000 unit",
+            explanation: "2000/8 = 250 unit/jam, jadi dalam 12 jam = 12 * 250 = 3000 unit."
+        },
+        {
+            question: "Jika 10 siswa dapat menyelesaikan tugas dalam 5 hari, berapa banyak siswa yang dibutuhkan untuk menyelesaikan tugas yang sama dalam 3 hari?",
+            options: ["6 siswa", "8 siswa", "12 siswa", "15 siswa"],
+            answer: "12 siswa",
+            explanation: "10/5 = 2 siswa/hari, jadi 3 hari membutuhkan 3 * 2 = 6 siswa."
+        },
+        {
+            question: "Jika 15 liter susu berharga Rp120.000, berapa harga 10 liter susu?",
+            options: ["Rp80.000", "Rp100.000", "Rp90.000", "Rp110.000"],
+            answer: "Rp80.000",
+            explanation: "Harga per liter = 120.000 / 15 = Rp8.000. Jadi, harga 10 liter = 10 * 8.000 = Rp80.000."
+        },
+        {
+            question: "Sebuah pabrik memproduksi 5000 unit dalam 4 hari. Berapa banyak unit yang dapat diproduksi dalam 10 hari?",
+            options: ["12.500 unit", "15.000 unit", "10.000 unit", "8.000 unit"],
+            answer: "12.500 unit",
+            explanation: "5000/4 = 1250 unit/hari, jadi dalam 10 hari = 10 * 1250 = 12.500 unit."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let answers = [];
+
+    function displayQuestion(index) {
+        const questionContainer = document.getElementById('questionContainer');
+        const questionData = questions[index];
+        questionContainer.innerHTML = `
+            <h3>Soal ${index + 1}: ${questionData.question}</h3>
+            ${questionData.options.map((option) => `
+                <label><input type="radio" name="question${index}" value="${option}"> ${option}</label>
+            `).join('')}
+        `;
+        
+        // Pastikan jawaban yang sebelumnya dipilih tetap ditampilkan
+        const selectedAnswer = answers[index];
+        if (selectedAnswer) {
+            document.querySelector(`input[name="question${index}"][value="${selectedAnswer}"]`).checked = true;
+        }
+    }
+
+    function initQuiz() {
+        const name = document.getElementById('name').value;
+        const studentClass = document.getElementById('class').value;
+
+        if (name === '' || studentClass === '') {
+            alert('Nama dan kelas harus diisi!');
+            return;
+        }
+
+        document.getElementById('formContainer').style.display = 'none';
+        document.getElementById('nextButton').disabled = false;
+        displayQuestion(currentQuestionIndex);
+        document.getElementById('quizContent').style.display = 'block';
+    }
+
+    function nextQuestion() {
+        const selectedOption = document.querySelector(`input[name="question${currentQuestionIndex}"]:checked`);
+        if (selectedOption) {
+            answers[currentQuestionIndex] = selectedOption.value;
+        }
+
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion(currentQuestionIndex);
+            document.getElementById('prevButton').disabled = false;
+        }
+
+        if (currentQuestionIndex === questions.length - 1) {
+            document.getElementById('nextButton').disabled = true;
+            document.getElementById('submitButton').disabled = false;
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion(currentQuestionIndex);
+            document.getElementById('nextButton').disabled = false;
+        }
+
+        if (currentQuestionIndex === 0) {
+            document.getElementById('prevButton').disabled = true;
+        }
+    }
+
+    function submitQuiz() {
+        const resultContainer = document.getElementById('resultContainer');
+        resultContainer.innerHTML = '';
+
+        let correctAnswers = 0;
+        answers.forEach((answer, index) => {
+            const questionData = questions[index];
+            const isCorrect = answer === questionData.answer;
+            if (isCorrect) correctAnswers++;
+        });
+
+        const score = Math.round((correctAnswers / questions.length) * 100);
+        resultContainer.innerHTML += `<strong>Skor Anda: ${score}/100</strong><br><br>`;
+
+        questions.forEach((question, index) => {
+            const answer = answers[index] || 'Tidak dijawab';
+            const isCorrect = answer === question.answer;
+            resultContainer.innerHTML += `
+                <div>
+                    <strong>Soal ${index + 1}: ${question.question}</strong><br>
+                    Jawaban Anda: ${answer} ${answer === 'Tidak dijawab' ? '' : (isCorrect ? '(Benar)' : '(Salah)')}<br>
+                    Penjelasan: ${question.explanation}
+                </div><br>
+            `;
+        });
+
+        resultContainer.innerHTML += '<button id="restartButton">Mulai Ulang Kuis</button>';
+        resultContainer.style.display = 'block';
+        document.getElementById('quizContent').style.display = 'none';
+
+        document.getElementById('restartButton').addEventListener('click', restartQuiz);
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        answers = [];
+        document.getElementById('formContainer').style.display = 'block';
+        document.getElementById('resultContainer').style.display = 'none';
+        document.getElementById('quizContent').style.display = 'none';
+        document.getElementById('name').value = '';
+        document.getElementById('class').value = '';
+    }
+
+    document.getElementById('startButton').addEventListener('click', initQuiz);
+    document.getElementById('nextButton').addEventListener('click', nextQuestion);
+    document.getElementById('prevButton').addEventListener('click', prevQuestion);
+    document.getElementById('submitButton').addEventListener('click', submitQuiz);
+</script>
+
+</body>
+</html>
